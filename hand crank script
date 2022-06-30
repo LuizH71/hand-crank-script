@@ -1,0 +1,129 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class ManivelaPlace : MonoBehaviour
+{
+    public GameObject ManivelainPlace;
+    public GameObject ManivelaToPlace;
+   
+
+    public int numero;
+
+    public bool NoLugar = false;
+
+    public GameObject guiObject;
+    public SimpleGrabSystem ScriptPickup;
+
+    public char manivelaTipe;
+
+    [HideInInspector]
+    public bool tirarParede = false;
+
+
+
+    void Update()
+    {
+    //Takes the crank that is in the players hand and go to the position in the crank place
+        if(NoLugar == true)
+        {
+            ManivelaToPlace.transform.SetParent(null);
+
+            ManivelaToPlace.GetComponent<Rigidbody>().isKinematic = true;
+
+            
+
+            ManivelaToPlace.transform.position = ManivelainPlace.transform.position;
+            ManivelaToPlace.transform.rotation = ManivelainPlace.transform.rotation;
+            
+
+
+
+
+
+        }
+
+  
+
+    }
+    
+
+    private void OnTriggerEnter(Collider other)
+    {
+    //active the U.I text when the crank with the same crank place tipe
+        if (other.CompareTag("manivela" + manivelaTipe))
+        {
+            guiObject.SetActive(true);
+        }
+            
+    }
+  //checks if a object with a exact type of tag is inside the collider the text will disppear
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.CompareTag("manivela" + manivelaTipe))
+        {
+            
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                //Destroy(other.gameObject);
+                //ManivelainPlace.SetActive(true);
+
+     
+
+                ScriptPickup.hasItem = false;
+                GameObject.Find("Audio Manager").GetComponent<AudioMan>().Play("Manivela");
+
+                NoLugar = true;
+          
+            }
+        }
+        
+        //Checks if the crank is in place and the player is close to it
+        if (NoLugar == true && other.CompareTag("Player"))
+        {
+            if (Input.GetKeyDown(KeyCode.F) )
+            {
+                Destroy(GameObject.Find("Smoke"+numero).gameObject);
+                guiObject.SetActive(false);
+                GameObject.Find("Audio Manager").GetComponent<AudioMan>().Play("ManivelaPlace");
+
+                GameObject.Find("GameManager").GetComponent<GameManager>().desativarSmoke[numero] = 1 ;
+                
+            }
+            if(Input.GetButtonDown("Fire1"))
+            {
+                NoLugar = false;
+            }
+
+        }
+ 
+    }
+
+
+  //checks if a object with a exact type of tag exit the collider the text will disppear
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("manivela"+ manivelaTipe))
+        {
+            guiObject.SetActive(false);
+        }
+        if (other.CompareTag("Player"))
+        {
+            guiObject.SetActive(false);
+        }
+    }
+
+   
+    private void Awake()
+    {
+    
+    //find if the hand had turned already and te object was destroyed. if already destroyed and game save, will destroy again
+        if(GameObject.Find("GameManager").GetComponent<GameManager>().desativarSmoke[numero] == 1)
+        {
+            Destroy(GameObject.Find("Smoke" + numero).gameObject);
+        }
+
+
+    }
+
+}
