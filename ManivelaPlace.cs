@@ -24,6 +24,7 @@ public class ManivelaPlace : MonoBehaviour
 
     void Update()
     {
+    //Will grab crank from the players hand and put on the right place to disable the object
         if(NoLugar == true)
         {
             ManivelaToPlace.transform.SetParent(null);
@@ -45,7 +46,7 @@ public class ManivelaPlace : MonoBehaviour
   
 
     }
-    // Update is called once per frame
+    // wiil activete the text to inform player hou to put the crank(a tutorial text)
 
     private void OnTriggerEnter(Collider other)
     {
@@ -55,7 +56,8 @@ public class ManivelaPlace : MonoBehaviour
         }
             
     }
-
+    
+    //when the crank is in place and the player press F, a sound will play.
     private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("manivela" + manivelaTipe))
@@ -77,6 +79,7 @@ public class ManivelaPlace : MonoBehaviour
         }
         if (NoLugar == true && other.CompareTag("Player"))
         {
+        //when the player is near and the crank is in place, pressing F, will play another sound like if the crank was turned and then the game object that you wanted will be destroyed
             if (Input.GetKeyDown(KeyCode.F) )
             {
                 Destroy(GameObject.Find("Smoke"+numero).gameObject);
@@ -96,7 +99,7 @@ public class ManivelaPlace : MonoBehaviour
     }
 
 
-
+//Will disable the U.I text if the player get's far from the crank place
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("manivela"+ manivelaTipe))
@@ -109,6 +112,7 @@ public class ManivelaPlace : MonoBehaviour
         }
     }
 
+//if the game object was destroyed and the game was save, when the game is load, the game object will be destroyed again. I use int beacuse PlayerPrefes don't have bool.
     private void Awake()
     {
         if(GameObject.Find("GameManager").GetComponent<GameManager>().desativarSmoke[numero] == 1)
